@@ -8,6 +8,7 @@ import {
   Typography,
   Icon,
 } from "@material-ui/core";
+import { AddPhotoAlternate as FileUpload } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import auth from "./../auth/auth-helper";
 import { read, update } from "./api-user.js";
@@ -55,11 +56,12 @@ export default function EditProfile({ match }) {
   const [values, setValues] = useState({
     name: "",
     about: "",
+    photo: "",
     email: "",
     password: "",
-    open: false,
-    error: "",
     redirectToProfile: false,
+    error: "",
+    id: "",
   });
   const jwt = auth.isAuthenticated();
 
@@ -120,6 +122,21 @@ export default function EditProfile({ match }) {
         <Typography variant="h6" className={classes.title}>
           Edit Profile
         </Typography>
+        <input
+          accept="image/*"
+          type="file"
+          onChange={handleChange("photo")}
+          id="icon-button-file"
+          className={classes.input}
+        />
+        <label htmlFor="icon-button-file">
+          <Button variant="contained" color="default" component="span">
+            Upload <FileUpload />
+          </Button>
+        </label>
+        <span className={classes.filename}>
+          {values.photo ? values.photo.name : ""}
+        </span>
         <TextField
           id="name"
           label="Name"

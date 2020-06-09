@@ -110,7 +110,8 @@ export default function EditProfile({ match }) {
     });
   };
   const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value });
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
+    setValues({ ...values, [name]: value });
   };
 
   if (values.redirectToProfile) {

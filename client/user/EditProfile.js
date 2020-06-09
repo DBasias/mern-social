@@ -37,14 +37,26 @@ const useStyles = makeStyles(theme => ({
     margin: "auto",
     marginBottom: theme.spacing(2),
   },
+  bigAvatar: {
+    width: 60,
+    height: 60,
+    margin: "auto",
+  },
+  input: {
+    display: "none",
+  },
+  filename: {
+    marginLeft: "10px",
+  },
 }));
 
 export default function EditProfile({ match }) {
   const classes = useStyles();
   const [values, setValues] = useState({
     name: "",
-    password: "",
+    about: "",
     email: "",
+    password: "",
     open: false,
     error: "",
     redirectToProfile: false,
@@ -115,6 +127,14 @@ export default function EditProfile({ match }) {
           value={values.name}
           onChange={handleChange("name")}
           margin="normal"
+        />
+        <TextField
+          id="multiline-flexible"
+          label="About"
+          multiline
+          rows="2"
+          value={values.about}
+          onChange={handleChange("about")}
         />
         <br />
         <TextField

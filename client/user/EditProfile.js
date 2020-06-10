@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
   Icon,
+  Avatar,
 } from "@material-ui/core";
 import { AddPhotoAlternate as FileUpload } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -79,9 +80,16 @@ export default function EditProfile({ match }) {
       if (data && data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        setValues({ ...values, name: data.name, email: data.email });
+        setValues({
+          ...values,
+          id: data._id,
+          name: data.name,
+          email: data.email,
+          about: data.about,
+        });
       }
     });
+
     return function cleanup() {
       abortController.abort();
     };
@@ -95,21 +103,15 @@ export default function EditProfile({ match }) {
     values.about && userData.append("about", values.about);
     values.photo && userData.append("photo", values.photo);
 
-    update(
-      {
-        userId: match.params.userId,
-      },
-      {
-        t: jwt.token,
-      },
-      userData
-    ).then(data => {
-      if (data && data.error) {
-        setValues({ ...values, error: data.error });
-      } else {
-        setValues({ ...values, redirectToProfile: true });
+    update({ userId: match.params.userId }, { t: jwt.token }, userData).then(
+      data => {
+        if (data && data.error) {
+          setValues({ ...values, error: data.error });
+        } else {
+          setValues({ ...values, redirectToProfile: true });
+        }
       }
-    });
+    );
   };
 
   const handleChange = name => event => {
@@ -117,15 +119,22 @@ export default function EditProfile({ match }) {
     setValues({ ...values, [name]: value });
   };
 
+  const photoUrl = values.id
+    ? `/api/users/photo/${values.id}?${new Date().getTime()}`
+    : "/api/users/defaultphoto";
+
   if (values.redirectToProfile) {
-    return <Redirect to={"/user/" + values.userId} />;
+    return <Redirect to={"/user/" + values.id} />;
   }
+
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography variant="h6" className={classes.title}>
           Edit Profile
         </Typography>
+        <Avatar src={photoUrl} className={classes.bigAvatar} />
+        <br />
         <input
           accept="image/*"
           type="file"
@@ -141,6 +150,7 @@ export default function EditProfile({ match }) {
         <span className={classes.filename}>
           {values.photo ? values.photo.name : ""}
         </span>
+        <br />
         <TextField
           id="name"
           label="Name"
@@ -149,6 +159,7 @@ export default function EditProfile({ match }) {
           onChange={handleChange("name")}
           margin="normal"
         />
+        <br />
         <TextField
           id="multiline-flexible"
           label="About"
@@ -156,6 +167,8 @@ export default function EditProfile({ match }) {
           rows="2"
           value={values.about}
           onChange={handleChange("about")}
+          className={classes.textField}
+          margin="normal"
         />
         <br />
         <TextField
@@ -177,7 +190,7 @@ export default function EditProfile({ match }) {
           onChange={handleChange("password")}
           margin="normal"
         />
-        <br />{" "}
+        <br />
         {values.error && (
           <Typography component="p" color="error">
             <Icon color="error" className={classes.error}>

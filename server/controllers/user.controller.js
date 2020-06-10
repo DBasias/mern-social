@@ -3,6 +3,7 @@ import formidable from "formidable";
 import fs from "fs";
 import User from "./../models/user.model";
 import errorHandler from "./../helpers/dbErrorHandler";
+import profileImage from "./../../client/assets/images/profile-pic.png";
 
 const create = async (req, res) => {
   const user = new User(req.body);
@@ -102,6 +103,18 @@ const remove = async (req, res) => {
   }
 };
 
+const photo = (req, res, next) => {
+  if (req.profile.photo.data) {
+    res.set("Content-Type", req.profile.photo.contentType);
+    return res.send(req.profile.photo.data);
+  }
+  next();
+};
+
+const defaultPhoto = (req, res) => {
+  return res.sendFile(process.cwd() + profileImage);
+};
+
 export default {
   create,
   userByID,
@@ -109,4 +122,6 @@ export default {
   list,
   remove,
   update,
+  photo,
+  defaultPhoto,
 };

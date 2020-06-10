@@ -72,7 +72,7 @@ const update = async (req, res) => {
     user.updated = Date.now();
 
     if (files.photo) {
-      user.photo.data = fs.readFileSync(files.photos.path);
+      user.photo.data = fs.readFileSync(files.photo.path);
       user.photo.contentType = files.photo.type;
     }
 

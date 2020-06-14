@@ -35,7 +35,6 @@ const userByID = async (req, res, next, id) => {
         error: "User not found",
       });
 
-    console.log(user);
     req.profile = user;
 
     next();
@@ -115,6 +114,7 @@ const photo = (req, res, next) => {
     res.set("Content-Type", req.profile.photo.contentType);
     return res.send(req.profile.photo.data);
   }
+
   next();
 };
 
@@ -139,9 +139,7 @@ const addFollower = async (req, res) => {
   try {
     let result = await User.findByIdAndUpdate(
       req.body.followId,
-      {
-        $push: { followers: req.body.userId },
-      },
+      { $push: { followers: req.body.userId } },
       { new: true }
     )
       .populate("following", "_id name")

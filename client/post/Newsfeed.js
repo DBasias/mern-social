@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, Typography, Divider } from "@material-ui/core";
+import { listNewsFeed } from "./api-post";
+import auth from "./../auth/auth-helper";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -23,6 +25,26 @@ const useStyles = makeStyles(theme => ({
 export default function Newsfeed() {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
+  const jwt = auth.isAuthenticated();
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    listNewsFeed({ userId: jwt.user._id }, { t: jwt.token }, signal).then(
+      data => {
+        if (data && data.error) {
+          console.log(data.error);
+        } else {
+          setPosts(data);
+        }
+      }
+    );
+
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, []);
 
   const addPost = post => {
     const updatedPosts = [...posts];

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, Typography, Divider } from "@material-ui/core";
+import PostList from "./PostList";
+import NewPost from "./NewPost";
 import { listNewsFeed } from "./api-post";
 import auth from "./../auth/auth-helper";
 
@@ -60,8 +62,10 @@ export default function Newsfeed() {
   };
 
   return (
-    <Card>
-      <Typography type="title">Newsfeed</Typography>
+    <Card className={classes.card}>
+      <Typography type="title" className={classes.title}>
+        Newsfeed
+      </Typography>
       <Divider />
       <NewPost addUpdate={addPost} />
       <Divider />

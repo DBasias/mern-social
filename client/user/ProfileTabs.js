@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { AppBar, Typography, Tabs, Tab } from "@material-ui/core";
 import FollowGrid from "./FollowGrid";
+import PostList from "./../post/PostList";
 
 export default function ProfileTabs(props) {
   const [tab, setTab] = useState(0);
@@ -25,7 +26,11 @@ export default function ProfileTabs(props) {
           <Tab label="Followers" />
         </Tabs>
       </AppBar>
-      {tab === 0 && <TabContainer>Posts</TabContainer>}
+      {tab === 0 && (
+        <TabContainer>
+          <PostList removeUpdate={props.removePostUpdate} posts={props.posts} />
+        </TabContainer>
+      )}
       {tab === 1 && (
         <TabContainer>
           <FollowGrid people={props.user.following} />

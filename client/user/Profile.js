@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Redirect, Link } from "react-router-dom";
 import {
   Paper,
   List,
@@ -18,7 +19,7 @@ import FollowProfileButton from "./FollowProfileButton";
 import ProfileTabs from "./ProfileTabs";
 import auth from "./../auth/auth-helper";
 import { read } from "./api-user.js";
-import { Redirect, Link } from "react-router-dom";
+import { listByUser } from "../post/api-post";
 
 const useStyles = makeStyles(theme => ({
   root: theme.mixins.gutters({
@@ -46,26 +47,24 @@ export default function Profile({ match }) {
     redirectToSignin: false,
     following: true,
   });
+  const [posts, setPosts] = useState([]);
   const jwt = auth.isAuthenticated();
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    read(
-      {
-        userId: match.params.userId,
-      },
-      { t: jwt.token },
-      signal
-    ).then(data => {
-      if (data && data.error) {
-        setValues({ ...values, redirectToSignin: true });
-      } else {
-        let following = checkFollow(data);
-        setValues({ ...values, user: data, following: following });
+    read({ userId: match.params.userId }, { t: jwt.token }, signal).then(
+      data => {
+        if (data && data.error) {
+          setValues({ ...values, redirectToSignin: true });
+        } else {
+          let following = checkFollow(data);
+          setValues({ ...values, user: data, following: following });
+          loadPosts(data._id);
+        }
       }
-    });
+    );
 
     return function cleanup() {
       abortController.abort();
@@ -94,6 +93,23 @@ export default function Profile({ match }) {
         setValues({ ...values, user: data, following: !values.following });
       }
     });
+  };
+
+  const loadPosts = user => {
+    listByUser({ userId: user }, { t: jwt.token }).then(data => {
+      if (data && data.error) {
+        console.log(data.error);
+      } else {
+        setPosts(data);
+      }
+    });
+  };
+
+  const removePost = post => {
+    const updatedPosts = posts;
+    const index = updatedPosts.indexOf(post);
+    updatedPosts.splice(index, 1);
+    setPosts(updatedPosts);
   };
 
   const photoUrl = values.user._id
@@ -145,7 +161,11 @@ export default function Profile({ match }) {
           />
         </ListItem>
       </List>
-      <ProfileTabs user={values.user} />
+      <ProfileTabs
+        user={values.user}
+        posts={posts}
+        removePostUpdate={removePost}
+      />
     </Paper>
   );
 }

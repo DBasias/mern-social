@@ -13,6 +13,10 @@ router
   .route("/api/posts/by/:userId")
   .get(authCtrl.requireSignin, postCtrl.listByUser);
 
+router
+  .route("/api/posts/new/:userId")
+  .post(authCtrl.requireSignin, postCtrl.create);
+
 router.param("userId", userCtrl.userByID);
 
 export default router;

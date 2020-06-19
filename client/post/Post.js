@@ -19,6 +19,8 @@ import {
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import auth from "./../auth/auth-helper";
+import { remove } from "./api-post";
+import jwt from "express-jwt";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -59,7 +61,15 @@ export default function Post(props) {
     comments: props.post.comments,
   });
 
-  const deletePost = () => {};
+  const deletePost = () => {
+    remove({ postId: props.post._id }, { t: jwt.token }).then(data => {
+      if (data && data.error) {
+        console.log(data.error);
+      } else {
+        props.onRemove(props.post);
+      }
+    });
+  };
 
   const clickLike = () => {};
 

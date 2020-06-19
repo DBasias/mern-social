@@ -50,4 +50,21 @@ const listByUser = async (params, credentials) => {
   }
 };
 
-export { create, listNewsFeed, listByUser };
+const remove = async (params, credentials) => {
+  try {
+    let response = await fetch("/api/posts/" + params.postId, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
+
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { create, listNewsFeed, listByUser, remove };

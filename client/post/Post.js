@@ -19,8 +19,7 @@ import {
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import auth from "./../auth/auth-helper";
-import { remove } from "./api-post";
-import jwt from "express-jwt";
+import { remove, unlike, like } from "./api-post";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -56,10 +55,16 @@ const useStyles = makeStyles(theme => ({
 export default function Post(props) {
   const classes = useStyles();
   const [values, setValues] = useState({
-    like: "",
+    like: checkLike(props.post.likes),
     likes: props.post.likes.length,
     comments: props.post.comments,
   });
+  const jwt = auth.isAuthenticated();
+
+  const checkLike = likes => {
+    let match = likes.indexOf(jwt.user._id) !== -1;
+    return match;
+  };
 
   const deletePost = () => {
     remove({ postId: props.post._id }, { t: jwt.token }).then(data => {
@@ -71,7 +76,23 @@ export default function Post(props) {
     });
   };
 
-  const clickLike = () => {};
+  const clickLike = () => {
+    let callApi = values.like ? unlike : like;
+
+    callApi({ userId: jwt.user._id }, { t: jwt.token }, props.post._id).then(
+      data => {
+        if (data && data.error) {
+          console.log(data.error);
+        } else {
+          setValues({
+            ...values,
+            like: !values.like,
+            likes: data.likes.length,
+          });
+        }
+      }
+    );
+  };
 
   const updateComments = () => {};
 

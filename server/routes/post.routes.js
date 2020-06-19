@@ -19,6 +19,8 @@ router
 
 router.route("/api/posts/photo/:postId").get(postCtrl.photo);
 
+router.route("/api/posts/like").put(authCtrl.requireSignin, postCtrl.like);
+
 router
   .route("/api/posts/:postId")
   .delete(authCtrl.requireSignin, postCtrl.isPoster, postCtrl.remove);

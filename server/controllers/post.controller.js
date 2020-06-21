@@ -152,6 +152,27 @@ const comment = async (req, res) => {
   }
 };
 
+const uncomment = async (req, res) => {
+  let comment = req.body.comment;
+
+  try {
+    let result = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $pull: { comments: { _id: comment._id } } },
+      { new: true }
+    )
+      .populate("comments.postedBy", "_id name")
+      .populate("postedBy", "_id name")
+      .exec();
+
+    res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
+
 const postById = async (req, res, next, id) => {
   try {
     let post = await Post.findById(id).populate("postedBy", "_id name").exec();
@@ -182,4 +203,5 @@ export default {
   like,
   unlike,
   comment,
+  uncomment,
 };

@@ -55,17 +55,16 @@ const useStyles = makeStyles(theme => ({
 
 export default function Post(props) {
   const classes = useStyles();
+  const jwt = auth.isAuthenticated();
+  const checkLike = likes => {
+    let match = likes.indexOf(jwt.user._id) !== -1;
+    return match;
+  };
   const [values, setValues] = useState({
     like: checkLike(props.post.likes),
     likes: props.post.likes.length,
     comments: props.post.comments,
   });
-  const jwt = auth.isAuthenticated();
-
-  const checkLike = likes => {
-    let match = likes.indexOf(jwt.user._id) !== -1;
-    return match;
-  };
 
   const deletePost = () => {
     remove({ postId: props.post._id }, { t: jwt.token }).then(data => {
@@ -102,7 +101,7 @@ export default function Post(props) {
   return (
     <Card className={classes.card}>
       <CardHeader
-        avatar={<Avatar src={"/api/users/photo" + props.post.postedBy._id} />}
+        avatar={<Avatar src={"/api/users/photo/" + props.post.postedBy._id} />}
         action={
           props.post.postedBy._id === auth.isAuthenticated().user._id && (
             <IconButton onClick={deletePost}>
@@ -153,7 +152,7 @@ export default function Post(props) {
         )}
         <span>{values.likes}</span>
         <IconButton
-          classname={classes.button}
+          className={classes.button}
           aria-label="Comment"
           color="secondary"
         >

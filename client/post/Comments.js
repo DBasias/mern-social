@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { CardHeader, Avatar, TextField } from "@material-ui/core";
+import { CardHeader, Avatar, TextField, Icon } from "@material-ui/core";
 import auth from "./../auth/auth-helper";
 import { comment } from "./api-post";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Comments() {
+export default function Comments(props) {
   const classes = useStyles();
   const [text, setText] = useState("");
   const jwt = auth.isAuthenticated();
@@ -55,7 +56,30 @@ export default function Comments() {
     }
   };
 
+  const deleteComment = () => {};
+
   const handleChange = () => {};
+
+  const commentBody = item => {
+    return (
+      <p className={classes.commentText}>
+        <Link to={"/user/" + item.postedBy._id}>{item.postedBy.name}</Link>
+        <br />
+        {item.text}
+        <span className={classes.commentDate}>
+          {new Date(item.created).toDateString()} |{" "}
+          {auth.isAuthenticated().user._id === item.postedBy._id && (
+            <Icon
+              onClick={deleteComment(item)}
+              className={classes.commentDelete}
+            >
+              delete
+            </Icon>
+          )}
+        </span>
+      </p>
+    );
+  };
 
   return (
     <div>
@@ -79,6 +103,21 @@ export default function Comments() {
         }
         className={classes.cardHeader}
       />
+      {props.comments.map((item, i) => {
+        return (
+          <CardHeader
+            avatar={
+              <Avatar
+                className={classes.smallAvatar}
+                src={"/api/users/photo/" + item.postedBy._id}
+              />
+            }
+            title={commentBody(item)}
+            className={classes.cardHeader}
+            key={i}
+          />
+        );
+      })}
     </div>
   );
 }

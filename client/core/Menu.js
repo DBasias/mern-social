@@ -6,7 +6,7 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import HomeIcon from "@material-ui/icons/Home";
+import { Home as HomeIcon } from "@material-ui/icons";
 import auth from "./../auth/auth-helper";
 import { Link, withRouter } from "react-router-dom";
 
@@ -18,15 +18,12 @@ const Menu = withRouter(({ history }) => (
   <AppBar position="static">
     <Toolbar>
       <Typography variant="h6" color="inherit">
-        MERN Skeleton
+        MERN Social
       </Typography>
       <Link to="/">
         <IconButton aria-label="Home" style={isActive(history, "/")}>
           <HomeIcon />
         </IconButton>
-      </Link>
-      <Link to="/users">
-        <Button style={isActive(history, "/users")}>Users</Button>
       </Link>
       {!auth.isAuthenticated() && (
         <span>

@@ -17,6 +17,7 @@ import {
   FavoriteBorder as FavoriteBorderIcon,
   Comment as CommentIcon,
 } from "@material-ui/icons";
+import Comments from "./Comments";
 import { Link } from "react-router-dom";
 import auth from "./../auth/auth-helper";
 import { remove, unlike, like } from "./api-post";
@@ -94,7 +95,9 @@ export default function Post(props) {
     );
   };
 
-  const updateComments = () => {};
+  const updateComments = comments => {
+    setValues({ ...values, comments: comments });
+  };
 
   return (
     <Card className={classes.card}>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { CardHeader, Avatar, TextField, Icon } from "@material-ui/core";
 import auth from "./../auth/auth-helper";
-import { comment } from "./api-post";
+import { comment, uncomment } from "./api-post";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
@@ -56,7 +56,20 @@ export default function Comments(props) {
     }
   };
 
-  const deleteComment = () => {};
+  const deleteComment = comment => event => {
+    uncomment(
+      { userId: jwt.user._id },
+      { t: jwt.token },
+      props.postId,
+      comment
+    ).then(data => {
+      if (data && data.error) {
+        console.log(data.error);
+      } else {
+        props.updateComments(data.comments);
+      }
+    });
+  };
 
   const handleChange = () => {};
 

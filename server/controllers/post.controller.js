@@ -101,7 +101,7 @@ const remove = async (req, res) => {
 
 const like = async (req, res) => {
   try {
-    let result = Post.findByIdAndUpdate(
+    let result = await Post.findByIdAndUpdate(
       req.body.postId,
       { $push: { likes: req.body.userId } },
       { new: true }

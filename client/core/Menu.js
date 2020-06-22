@@ -11,7 +11,7 @@ import auth from "./../auth/auth-helper";
 import { Link, withRouter } from "react-router-dom";
 
 const isActive = (history, path) => {
-  if (history.location.pathname == path) return { color: "#ff4081" };
+  if (history.location.pathname == path) return { color: "#ffa726" };
   else return { color: "#ffffff" };
 };
 const Menu = withRouter(({ history }) => (

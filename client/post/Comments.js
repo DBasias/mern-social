@@ -43,7 +43,7 @@ export default function Comments(props) {
     if (event.keyCode === 13 && event.target.value) {
       event.preventDefault();
 
-      comment({ userId: jwt.user._id }, { t: jwt.token }, props.post._id, {
+      comment({ userId: jwt.user._id }, { t: jwt.token }, props.postId, {
         text: text,
       }).then(data => {
         if (data && data.error) {
@@ -71,7 +71,9 @@ export default function Comments(props) {
     });
   };
 
-  const handleChange = () => {};
+  const handleChange = event => {
+    setText(event.target.value);
+  };
 
   const commentBody = item => {
     return (
